@@ -1,276 +1,396 @@
 Group {
- name FakeSun
- tile_color 0xff
- addUserKnob {20 fake_sun l "Fake Sun"}
- addUserKnob {12 position l Position}
- position {200 200}
- addUserKnob {7 power l Power R 1 100}
- power 10
- addUserKnob {18 color l Colorize}
- color {1 1 1}
- addUserKnob {6 color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
- addUserKnob {7 falloff l Falloff R 0.1 100}
- falloff 0.1
- addUserKnob {26 ""}
- addUserKnob {4 spectrum l Mode M {Final "Color Spectrum" "" "" "" "" "" ""}}
- addUserKnob {7 color_grad l "Color Shift" R 0 4}
- color_grad 1
- addUserKnob {7 intensity l Intensity R 0 2}
- intensity 1
- addUserKnob {7 blueshift l Blueshift}
- addUserKnob {26 ""}
- addUserKnob {6 radial_enable l "Radial Mask" +STARTLINE}
- addUserKnob {7 radial l Size R 0 3000}
- radial 300
- addUserKnob {7 blur l Blur R 0 1000}
- blur 30
- addUserKnob {20 info l Info}
- addUserKnob {26 _1 l "" +STARTLINE T "Procedurally generated point light. Colorizing outputs better results using values lower than one.\nFakeSun math works using inverse-square law."}
- addUserKnob {26 ""}
- addUserKnob {26 _2 l "" +STARTLINE T "Created by <b><a href=\"https://vimeo.com/lucascoutinho\">Lucas L. Coutinho</a></b>"}
- addUserKnob {26 _3 l "" +STARTLINE T "Version: <b>v01"}
- addUserKnob {26 _4 l "" +STARTLINE T "Year: 2024"}
+name FakeSun
+tile_color 0xff
+addUserKnob {20 fake_sun l FakeSun}
+addUserKnob {12 position l Position}
+position {200 200}
+addUserKnob {7 power l Power R 1 100}
+power 10
+addUserKnob {18 color l Colorize}
+color {1 0.5 0}
+addUserKnob {6 color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {7 falloff l Falloff R 0.1 4}
+falloff 0.1
+addUserKnob {26 ""}
+addUserKnob {4 spectrum l Mode M {Final "Color Spectrum" "" "" "" "" "" ""}}
+addUserKnob {7 infra_ctrl l Infrared}
+addUserKnob {7 ultra_ctrl l Ultraviolet}
+ultra_ctrl 1
+addUserKnob {7 blueshift l Blueshift}
+addUserKnob {7 mix_spectrum l "Spectrum Mix"}
+mix_spectrum 0.5
+addUserKnob {26 ""}
+addUserKnob {6 radial_enable l "Radial Mask" +STARTLINE}
+addUserKnob {7 radial l Size R 0 3000}
+radial 300
+addUserKnob {7 blur l Blur R 0 1000}
+blur 100
+addUserKnob {26 "" +STARTLINE}
+addUserKnob {26 _5 l "" +STARTLINE T "ACES color management is highly recommended."}
+addUserKnob {20 info l Info}
+addUserKnob {26 _1 l "" +STARTLINE T "Procedurally generated point light. Colorizing outputs better results using values lower than one.\nFakeSun math works using inverse-square law."}
+addUserKnob {26 ""}
+addUserKnob {26 _2 l "" +STARTLINE T "Created by <b><a href=\"https://vimeo.com/lucascoutinho\">Lucas L. Coutinho</a></b>"}
+addUserKnob {26 _3 l "" +STARTLINE T "Version: <b>v02"}
+addUserKnob {26 _4 l "" +STARTLINE T "Year: 2024"}
 }
- Input {
-  inputs 0
-  name Resolution
-  xpos -310
-  ypos -810
- }
- Remove {
-  name Remove1
-  xpos -310
-  ypos -661
- }
- Dot {
-  name Dot5
-  xpos -276
-  ypos -519
- }
-set N4fffe400 [stack 0]
- Dot {
-  name Dot2
-  xpos -82
-  ypos -519
- }
- Expression {
-  channel0 rgba
-  expr0 "clamp(radial - hypot(x-PointLight.position.x, y-PointLight.position.y))"
-  name Mask
-  tile_color 0xff
-  xpos -116
-  ypos -395
-  addUserKnob {20 User}
-  addUserKnob {7 radial l Radial}
-  radial {{parent.radial}}
- }
- Blur {
-  size {{parent.blur}}
-  name Blur1
-  xpos -116
-  ypos -355
- }
- Dot {
-  name Dot3
-  xpos -82
-  ypos 568
- }
-push $N4fffe400
- Dot {
-  name Dot7
-  xpos -543
-  ypos -519
- }
-set N4ffff800 [stack 0]
- Dot {
-  name Dot9
-  xpos -824
-  ypos -519
- }
- Expression {
-  channel0 rgba
-  expr0 "hypot(x-PointLight.position.x,y-PointLight.position.y) / hypot(input.width, input.height)"
-  name Gradient
-  tile_color 0xff
-  xpos -858
-  ypos -392
- }
- Colorspace {
-  colorspace_out HSV
-  name Colorspace1
-  xpos -858
-  ypos -352
- }
- Shuffle2 {
-  fromInput1 {{0} B}
-  fromInput2 {{0} B}
-  mappings "4 white -1 -1 rgba.green 0 1 white -1 -1 rgba.blue 0 2 rgba.alpha 0 3 rgba.alpha 0 3 rgba.blue 0 2 rgba.red 0 0"
-  name Shuffle2
-  xpos -858
-  ypos -312
- }
- Gamma {
-  channels {rgba.red -rgba.green -rgba.blue none}
-  value {{parent.color_grad}}
-  name Gamma1
-  xpos -858
-  ypos -272
- }
- Multiply {
-  channels {-rgba.red -rgba.green rgba.blue none}
-  value {{parent.intensity}}
-  name Multiply1
-  xpos -858
-  ypos -232
- }
- Colorspace {
-  colorspace_in HSV
-  name Colorspace2
-  xpos -858
-  ypos -192
- }
- Dot {
-  name Dot4
-  xpos -824
-  ypos -75
- }
-set N500ff800 [stack 0]
- Dot {
-  name Dot11
-  xpos -985
-  ypos -75
- }
- Remove {
-  name Remove2
-  xpos -1019
-  ypos 11
- }
- Expression {
-  expr2 1
-  name Expression1
-  xpos -1019
-  ypos 63
- }
- Dot {
-  name Dot6
-  xpos -985
-  ypos 146
- }
-push $N500ff800
- Merge2 {
-  inputs 2
-  operation in
-  bbox B
-  mix {{parent.blueshift}}
-  name Merge1
-  xpos -858
-  ypos 143
- }
- Dot {
-  name Dot10
-  xpos -824
-  ypos 250
- }
-set N4ff67000 [stack 0]
- Dot {
-  name Dot1
-  xpos -824
-  ypos 433
- }
-push $N4ff67000
-push $N4ffff800
- Expression {
-  channel0 rgba
-  expr0 "hypot(x-PointLight.position.x,y-PointLight.position.y) / hypot(input.width, input.height)"
-  name Falloff
-  tile_color 0xff
-  xpos -577
-  ypos -393
- }
- Gamma {
-  value {{parent.falloff}}
-  name Gamma2
-  xpos -577
-  ypos -353
- }
- SoftClip {
-  conversion "logarithmic compress"
-  softclip_min 0
-  name SoftClip1
-  xpos -577
-  ypos -301
- }
- Dot {
-  name Dot8
-  xpos -543
-  ypos -174
- }
-push $N4fffe400
- Expression {
-  expr0 "power * (1/hypot(x-position.x,y-position.y)) * color.r"
-  expr1 "power * (1/hypot(x-position.x,y-position.y)) * color.g"
-  expr2 "power * (1/hypot(x-position.x,y-position.y)) * color.b"
-  expr3 "clamp(power * (1/hypot(x-position.x,y-position.y)))"
-  name PointLight
-  tile_color 0xff
-  xpos -310
-  ypos -397
-  addUserKnob {20 control l Control}
-  addUserKnob {12 position l Position}
-  position {{parent.position} {parent.position}}
-  addUserKnob {7 power l Power R 1 100}
-  power {{parent.power}}
-  addUserKnob {18 color l Color}
-  color {{parent.color} {parent.color} {parent.color}}
-  addUserKnob {6 color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
- }
- Clamp {
-  minimum_enable false
-  maximum {{parent.PointLight.power}}
-  name Clamp1
-  xpos -310
-  ypos -357
- }
- MergeExpression {
-  inputs 2
-  expr0 "(1 - Ar) * Br"
-  expr1 "(1 - Ag) * Bg"
-  expr2 "(1 - Ab) * Bb"
-  expr3 "abs((1 - Aa) * Ba)"
-  name MergeExpression2
-  xpos -310
-  ypos -177
- }
- MergeExpression {
-  inputs 2
-  expr0 "(Ar*PointLight.power/10000) + Br"
-  expr1 "(Ag*PointLight.power/10000) + Bg"
-  expr2 "(Ab*PointLight.power/10000) + Bb"
-  name MergeExpression3
-  xpos -310
-  ypos 247
- }
- Switch {
-  inputs 2
-  which {{spectrum}}
-  name Switch1
-  xpos -310
-  ypos 430
- }
- MergeExpression {
-  inputs 2
-  expr0 "Ar * Br"
-  expr1 "Ag * Bg"
-  expr2 "Ab * Bb"
-  expr3 "Aa * Ba"
-  name MergeExpression1
-  xpos -310
-  ypos 565
-  disable {{!radial_enable}}
- }
- Output {
-  name Output1
-  xpos -310
-  ypos 770
- }
+Input {
+inputs 0
+name Resolution
+xpos -310
+ypos -810
+}
+Remove {
+name Remove1
+xpos -310
+ypos -661
+}
+Dot {
+name Dot5
+xpos -276
+ypos -519
+}
+set Nf8d32000 [stack 0]
+Dot {
+name Dot2
+xpos -82
+ypos -519
+}
+Expression {
+channel0 rgba
+expr0 "clamp(radial - hypot(x-PointLight.position.x, y-PointLight.position.y))"
+name Mask
+tile_color 0xff
+xpos -116
+ypos -395
+addUserKnob {20 User}
+addUserKnob {7 radial l Radial}
+radial {{parent.radial}}
+}
+Blur {
+size {{parent.blur}}
+name Blur1
+xpos -116
+ypos -355
+}
+Dot {
+name Dot3
+xpos -82
+ypos 942
+}
+push $Nf8d32000
+Dot {
+name Dot7
+xpos -543
+ypos -519
+}
+set Ne8d34800 [stack 0]
+Dot {
+name Dot9
+xpos -824
+ypos -519
+}
+set Ne8d34400 [stack 0]
+Expression {
+channel0 rgba
+expr0 "1-(hypot(x-PointLight.position.x,y-PointLight.position.y) / hypot(input.width, input.height))"
+name Gradient
+tile_color 0xff
+xpos -858
+ypos -448
+}
+Expression {
+channel0 rgb
+expr0 "r * (Wavelenght.wave_max - Wavelenght.wave_min) + Wavelenght.wave_min"
+name Expression2
+xpos -858
+ypos -408
+}
+Dot {
+name Dot12
+xpos -824
+ypos -295
+}
+set Ne8d0d800 [stack 0]
+Dot {
+name Dot13
+xpos -1090
+ypos -295
+}
+Expression {
+channel0 rgba
+expr0 "(r < ultra.g) ? (-1 * (r - ultra.g)/ultra.b) : (r > ired.r) ? 1-((ired.g-r)/ired.b) : 0"
+name toMask
+tile_color 0x1fff00ff
+xpos -1124
+ypos -170
+addUserKnob {20 User}
+addUserKnob {18 ultra l Ultraviolet}
+ultra {121 400 {"ultra.g - ultra.r"}}
+addUserKnob {6 ultra_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 violet l Violet}
+violet {380 450 {violet.g-violet.r}}
+addUserKnob {6 violet_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 blue l Blue}
+blue {450 485 {"blue.g - blue.r"}}
+addUserKnob {6 blue_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 cyan l Cyan}
+cyan {485 500 {"cyan.g - cyan.r"}}
+addUserKnob {6 cyan_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 green l Green}
+green {500 565 {"green.g - green.r"}}
+addUserKnob {6 green_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 yellow l Yellow}
+yellow {565 590 {"yellow.g - yellow.r"}}
+addUserKnob {6 yellow_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 orange l Orange}
+orange {590 625 {"orange.g - orange.r"}}
+addUserKnob {6 orange_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 red l Red}
+red {625 750 {"red.g - red.r"}}
+addUserKnob {6 red_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 ired l Infrared}
+ired {700 1000 {"ired.g - ired.r"}}
+addUserKnob {6 ired_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {6 infra_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+}
+Clamp {
+name Clamp2
+xpos -1124
+ypos -130
+}
+Invert {
+name Invert1
+xpos -1124
+ypos -78
+}
+Dot {
+name Dot14
+xpos -1090
+ypos 62
+}
+push $Ne8d0d800
+Expression {
+expr0 "(r < violet.g) ? (-1 * (r - violet.g)/violet.b):\n(r < green.g) ? 0 :\n(r < yellow.g) ? (r - yellow.r)/yellow.b :\n1"
+expr1 "(g < blue.r) ? 0 :\n(g < blue.g) ? (r - blue.r)/blue.b :\n(g < orange.g) ? 1 :\n(g > red.r) ? (-1 * (g - red.g)/red.b) :\n(-1 * (g - orange.g)/orange.b)"
+expr2 "(b < blue.g) ? 1 :\n(b < yellow.r) ? (-1 * (b - yellow.r)/green.b) : 0"
+name toRGB
+tile_color 0x1fff00ff
+xpos -858
+ypos -146
+addUserKnob {20 User}
+addUserKnob {18 ultra l Ultraviolet}
+ultra {121 400 {"ultra.g - ultra.r"}}
+addUserKnob {6 ultra_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 violet l Violet}
+violet {380 500 {violet.g-violet.r}}
+addUserKnob {6 violet_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 blue l Blue}
+blue {450 485 {"blue.g - blue.r"}}
+addUserKnob {6 blue_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 cyan l Cyan}
+cyan {485 500 {"cyan.g - cyan.r"}}
+addUserKnob {6 cyan_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 green l Green}
+green {500 565 {"green.g - green.r"}}
+addUserKnob {6 green_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 yellow l Yellow}
+yellow {565 590 {"yellow.g - yellow.r"}}
+addUserKnob {6 yellow_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 orange l Orange}
+orange {590 625 {"orange.g - orange.r"}}
+addUserKnob {6 orange_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 red l Red}
+red {624 750 {"red.g - red.r"}}
+addUserKnob {6 red_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {18 ired l Infrared}
+ired {700 1000 {"ired.g - ired.r"}}
+addUserKnob {6 ired_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+addUserKnob {6 infra_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+}
+Clamp {
+name Clamp3
+xpos -858
+ypos -106
+}
+MergeExpression {
+inputs 2
+expr0 "Ar * Br"
+expr1 "Ag * Bg"
+expr2 "Ab * Bb"
+expr3 Aa
+name MergeExpression4
+xpos -858
+ypos 59
+}
+Clamp {
+name Clamp4
+xpos -858
+ypos 187
+}
+Dot {
+name Dot4
+xpos -824
+ypos 299
+}
+set Ne8ceac00 [stack 0]
+Dot {
+name Dot11
+xpos -985
+ypos 299
+}
+Shuffle2 {
+fromInput1 {{0} B}
+fromInput2 {{0} B}
+mappings "4 black -1 -1 rgba.red 0 0 black -1 -1 rgba.green 0 1 rgba.alpha 0 3 rgba.blue 0 2 black -1 -1 rgba.alpha 0 3"
+name Shuffle1
+xpos -1019
+ypos 397
+}
+Dot {
+name Dot6
+xpos -985
+ypos 520
+}
+push $Ne8ceac00
+Merge2 {
+inputs 2
+operation in
+bbox B
+mix {{parent.blueshift}}
+name Merge1
+xpos -858
+ypos 517
+}
+Dot {
+name Dot10
+xpos -824
+ypos 624
+}
+set Ne8cc5400 [stack 0]
+Dot {
+name Dot1
+xpos -824
+ypos 807
+}
+push $Ne8cc5400
+push $Ne8d34800
+Expression {
+channel0 rgba
+expr0 "hypot(x-PointLight.position.x,y-PointLight.position.y) / hypot(input.width, input.height)"
+name Falloff
+tile_color 0xff
+xpos -577
+ypos -393
+}
+Gamma {
+value {{parent.falloff}}
+name Gamma2
+xpos -577
+ypos -353
+}
+SoftClip {
+conversion "logarithmic compress"
+softclip_min 0
+name SoftClip1
+xpos -577
+ypos -301
+}
+Dot {
+name Dot8
+xpos -543
+ypos -174
+}
+push $Nf8d32000
+Expression {
+expr0 "power * (1/hypot(x-position.x,y-position.y)) * color.r"
+expr1 "power * (1/hypot(x-position.x,y-position.y)) * color.g"
+expr2 "power * (1/hypot(x-position.x,y-position.y)) * color.b"
+expr3 "clamp(power * (1/hypot(x-position.x,y-position.y)))"
+name PointLight
+tile_color 0xff
+xpos -310
+ypos -397
+addUserKnob {20 control l Control}
+addUserKnob {12 position l Position}
+position {{parent.position} {parent.position}}
+addUserKnob {7 power l Power R 1 100}
+power {{parent.power}}
+addUserKnob {18 color l Color}
+color {{parent.color} {parent.color} {parent.color}}
+addUserKnob {6 color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+}
+Clamp {
+minimum_enable false
+maximum {{parent.PointLight.power}}
+name Clamp1
+xpos -310
+ypos -357
+}
+MergeExpression {
+inputs 2
+expr0 "(1 - Ar) * Br"
+expr1 "(1 - Ag) * Bg"
+expr2 "(1 - Ab) * Bb"
+expr3 "abs((1 - Aa) * Ba)"
+name MergeExpression2
+xpos -310
+ypos -177
+}
+MergeExpression {
+inputs 2
+channel0 {rgba.red -rgba.green -rgba.blue none}
+expr0 "Ar + Br"
+channel1 {-rgba.red rgba.green -rgba.blue none}
+expr1 "Ag + Bg"
+channel2 {-rgba.red -rgba.green rgba.blue none}
+expr2 "Bb + Bb"
+mix {{"pow(mix_spectrum, pow2(pi)) * 0.05"}}
+name MergeExpression5
+selected true
+xpos -310
+ypos 621
+}
+Switch {
+inputs 2
+which {{spectrum}}
+name Switch1
+xpos -310
+ypos 804
+}
+MergeExpression {
+inputs 2
+expr0 "Ar * Br"
+expr1 "Ag * Bg"
+expr2 "Ab * Bb"
+expr3 "Aa * Ba"
+name MergeExpression1
+xpos -310
+ypos 939
+disable {{!radial_enable}}
+}
+Output {
+name Output1
+xpos -310
+ypos 1144
+}
+push $Ne8d34400
+Dot {
+name Dot15
+xpos -973
+ypos -519
+}
+Expression {
+channel0 rgb
+expr0 "(x/input.width * (wave_max - wave_min)) + wave_min"
+name Wavelenght
+tile_color 0xff0000ff
+xpos -1007
+ypos -406
+addUserKnob {20 User}
+addUserKnob {7 wave_min l Minimum R 0 380}
+wave_min {{ultra_ctrl*380}}
+addUserKnob {7 wave_max l Maximum R 750 1000}
+wave_max {{"parent.infra_ctrl * 250 +750"}}
+}
 end_group
