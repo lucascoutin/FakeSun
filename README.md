@@ -2,4 +2,4 @@ FakeSun procedurally generates a point light that works according to inverse-sq
 
 ![alt text](https://klearrender.wordpress.com/wp-content/uploads/2024/08/fakesun_application_thumbnail.jpg)
 
-![alt text](https://klearrender.wordpress.com/wp-content/uploads/2024/08/fakesun_thumbnail_v02.jpg)
+![alt text](https://klearrender.wordpress.com/wp-content/uploads/2024/08/fakesun_tool_v02.jpg)
