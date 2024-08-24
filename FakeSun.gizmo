@@ -321,7 +321,7 @@ color {{parent.color} {parent.color} {parent.color}}
 addUserKnob {6 color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
 }
 Clamp {
-minimum_enable false
+minimum_enable true
 maximum {{parent.PointLight.power}}
 name Clamp1
 xpos -310
