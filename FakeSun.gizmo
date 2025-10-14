@@ -1,6 +1,6 @@
 Group {
  name FakeSun
- tile_color 0xff
+ tile_color 0x444444ff
  addUserKnob {20 fake_sun l FakeSun}
  addUserKnob {12 position l Position}
  position {200 200}
